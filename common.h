@@ -23,6 +23,20 @@ int read_size_t_arg(args_t *args, size_t *value);
 int read_str_arg(args_t *args, char **str);
 
 
+typedef struct {
+    char *bg_color_str, *line_color_str, *output;
+    size_t width, height;
+} common_flags_t;
+
+common_flags_t default_flags(void);
+
+
+int read_common_flags(char *flag, args_t *args, common_flags_t *flags);
+
+const char*get_help_msg();
+void set_help_msg(char *msg);
+
+
 #endif // COMMON_h_INCLUDED
 
 
@@ -84,7 +98,7 @@ int read_str_arg(args_t *args, char **str);
             if (strcmp(str, "blue") == 0)     return (rgb_t) { 0x0,  0x0,  0xFF };
             if (strcmp(str, "green") == 0)    return (rgb_t) { 0x0,  0xFF, 0x0  };
             if (strcmp(str, "black") == 0)    return (rgb_t) { 0x0,  0x0,  0x0  };
-            if (strcmp(str, "white") == 0)    return (rgb_t) { 0x0,  0x0,  0x0  };
+            if (strcmp(str, "white") == 0)    return (rgb_t) { 0xFF, 0xFF, 0xFF };
             if (strcmp(str, "yellow") == 0)   return (rgb_t) { 0xFF, 0xFF, 0x0  };
             if (strcmp(str, "magenta") == 0)  return (rgb_t) { 0xFF, 0x0,  0xFF };
             return (rgb_t) { 0, 0, 0 };
@@ -102,5 +116,50 @@ int read_str_arg(args_t *args, char **str);
             };
         }
     }
+
+    int read_common_flags(char *flag, args_t *args, common_flags_t *flags)
+    {
+        size_t ret = 0;
+
+        if (strcmp(flag, "--help") == 0) {
+            printf("%s\n", get_help_msg());
+            exit(0);
+        }
+
+        if (strcmp(flag, "-w") == 0 && read_size_t_arg(args, &flags->width) != 0) defer(1);
+
+        if (strcmp(flag, "-h") == 0 && read_size_t_arg(args, &flags->height) != 0) defer(1);
+
+        if (strcmp(flag, "-o") == 0 && read_str_arg(args, &flags->output) != 0) defer(1);
+
+        if (strcmp(flag, "--bg-color") == 0 && read_str_arg(args, &flags->bg_color_str) != 0) defer(1);
+
+        if (strcmp(flag, "--line-color") == 0 && read_str_arg(args, &flags->line_color_str) != 0) defer(1);
+
+    defer:
+        return ret;
+    }
+
+    common_flags_t default_flags(void)
+    {
+        return (common_flags_t) {
+            .bg_color_str = "#272e33",
+            .line_color_str = "#d3c6aa", 
+            .output = "output.png",
+            .width = 1920,
+            .height = 1080,
+        };
+    }
+
+    char *help_message;
+    const char *get_help_msg() {
+        return help_message;
+    }
+
+    void set_help_msg(char *msg)
+    {
+        help_message = msg;
+    }
+
 
 #endif

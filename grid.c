@@ -22,11 +22,12 @@ const char help_msg[] =
     " --offset-x   -- set offset by x axis.\n"
     " --offset-y   -- set offset by y axis.\n"
     " --grid_size  -- set grid size.\n"
-	" --bg-color   -- color of the background\n"
-	" --line-color -- color of the lightest lines\n"
+    " --bg-color   -- color of the background\n"
+    " --line-color -- color of the lightest lines\n"
     ;
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     args_t args = mk_args(argv, argc);
     char *prog_name = *shift(&args);
 
