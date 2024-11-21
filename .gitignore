@@ -1,4 +1,5 @@
-/nob*
+/nob
+/nob.old
 *.png
 /build
 
